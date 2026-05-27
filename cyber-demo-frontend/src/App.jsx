@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 
 function App() {
   const [url, setUrl] = useState('https://example.com')
-  const [status, setStatus] = useState('idle') // idle, processing, completed, error
+  const [status, setStatus] = useState('idle')
   const [taskId, setTaskId] = useState(null)
   const [results, setResults] = useState(null)
   const [error, setError] = useState(null)
 
-  // 1. Submit the task to the queue
+  
   const handleScan = async (e) => {
     e.preventDefault()
     setStatus('processing')
@@ -25,7 +25,6 @@ function App() {
       if (!response.ok) throw new Error("Failed to connect to the API.")
       
       const data = await response.json()
-      // Save the task_id so we can poll for it
       setTaskId(data.task_id) 
     } catch (err) {
       setError(err.message)
@@ -33,7 +32,6 @@ function App() {
     }
   }
 
-  // 2. The Polling Mechanism (Checks status every 2 seconds)
   useEffect(() => {
     let pollInterval;
 
@@ -43,7 +41,6 @@ function App() {
           const response = await fetch(`http://127.0.0.1:8000/api/v1/scan/status/${taskId}`)
           const data = await response.json()
 
-          // If Celery says it is done, stop polling and show results!
           if (data.status === 'success') {
             setResults(data.results)
             setStatus('completed')
@@ -55,10 +52,10 @@ function App() {
           setStatus('error')
           clearInterval(pollInterval)
         }
-      }, 2000) // 2000 milliseconds = 2 seconds
+      }, 2000)
     }
 
-    return () => clearInterval(pollInterval) // Cleanup when done
+    return () => clearInterval(pollInterval)
   }, [taskId, status])
 
   return (
@@ -67,7 +64,6 @@ function App() {
         Cybersecurity Automation Demo <span style={{fontSize: '0.5em', color: 'gray'}}>(Async Edition)</span>
       </h1>
 
-      {/* Control Panel */}
       <div style={{ background: '#f8f9fa', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
         <form onSubmit={handleScan} style={{ display: 'flex', gap: '10px' }}>
           <input 
@@ -94,7 +90,6 @@ function App() {
         </form>
       </div>
 
-      {/* Async Loading State */}
       {status === 'processing' && taskId && (
         <div style={{ padding: '20px', textAlign: 'center', background: '#e9ecef', borderRadius: '8px' }}>
           <h3 style={{ color: '#0d6efd', margin: 0 }}>Scan running in background...</h3>
@@ -102,14 +97,12 @@ function App() {
         </div>
       )}
 
-      {/* Error State */}
       {error && (
         <div style={{ background: '#f8d7da', color: '#842029', padding: '15px', borderRadius: '8px' }}>
           <strong>Error:</strong> {error}
         </div>
       )}
 
-      {/* Results Table */}
       {status === 'completed' && results && results.status === "success" && (
         <div>
           <h3>Scan Results for {results.target}</h3>
