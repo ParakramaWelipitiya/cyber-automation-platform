@@ -1,6 +1,7 @@
 # Cybersecurity Automation Platform (Async Edition)
 
 A full-stack, decoupled web application that performs automated security audits on target URLs. This project demonstrates an enterprise-grade asynchronous architecture using a React frontend, a FastAPI gateway, and a Celery/Redis background worker queue.
+<img width="1397" height="712" alt="image" src="https://github.com/user-attachments/assets/469f783d-a5d3-4e37-9ecd-bb04b9af8241" />
 
 ## Architecture
 
